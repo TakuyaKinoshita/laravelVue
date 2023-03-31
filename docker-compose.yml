@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+      args:
+        - "APP_ENV=${APP_ENV}"
+    container_name: nginx
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      - laravel
+      - vue
+    volumes:
+      - ./laravel-app:/var/www/html
+      - ./vue-app:/var/www/volumes
+      - ./docker/nginx/logs:/var/log/nginx
+
+  laravel:
+    build:
+      context: .
+      dockerfile: ./docker/laravel/Dockerfile
+      args:
+        - "APP_ENV=${APP_ENV}"
+    container_name: laravel
+    environment:
+      - "APP_PORT=9000"
+      - "APP_ENV=${APP_ENV}"
+    networks:
+      - app-network
+    volumes:
+      - ./laravel-app:/var/www
+    depends_on:
+      - db
+
+  vue:
+    build:
+      context: ./vue-app
+      dockerfile: ../docker/vue/Dockerfile
+    container_name: vue
+    command: "npm run serve"
+    networks:
+      - app-network
+    volumes:
+      - ./vue-app:/app
+
+  db:
+    image: mysql:8.0
+    container_name: db
+    env_file:
+      - ./.env
+    networks:
+      - app-network
+    volumes:
+      - dbdata:/var/lib/mysql
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  dbdata:

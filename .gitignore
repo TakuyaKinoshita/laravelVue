@@ -1,0 +1,27 @@
+# システムファイル
+.DS_Store
+Thumbs.db
+
+# 環境設定ファイル
+.env
+
+# ノードモジュール
+node_modules
+/frontend/node_modules
+
+# Dockerコンテナデータ
+/docker/nginx/logs
+/docker/db/data
+
+# Laravel 一時ファイル
+/backend/vendor
+/backend/node_modules
+/backend/public/storage
+/backend/storage/*.key
+/backend/storage/framework/cache
+/backend/storage/framework/sessions
+/backend/storage/framework/views
+
+# Vue.js 一時ファイル
+/frontend/dist
+/frontend/node_modules
